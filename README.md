@@ -24,3 +24,7 @@ AI coding assistants are powerful but don't inherently know your team's conventi
 ## Usage
 
 These files can be loaded as rules, skills, or system prompts in any AI coding agent so it applies them when working on SystemVerilog projects. Consult your agent's documentation for how to attach reference files or custom instructions.
+
+## License
+
+This work is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE).
