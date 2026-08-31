@@ -109,7 +109,7 @@ Testbench and verification code are out of scope.
 
   ```systemverilog
   for (genvar g = 0; g < N; g++) begin : gen_slice
-    ...
+      ...
   end
   ```
 
@@ -213,8 +213,8 @@ names — apply `sv_preferences.md` naming on top.
 
 ```systemverilog
 always_ff @(posedge clk or negedge rst_n) begin
-  if (!rst_n) q <= '0;
-  else        q <= d;
+    if (!rst_n) q <= '0;
+    else        q <= d;
 end
 ```
 
@@ -222,8 +222,8 @@ end
 
 ```systemverilog
 always_ff @(posedge clk or negedge rst_n) begin
-  if (!rst_n)  q <= '0;
-  else if (en) q <= d;
+    if (!rst_n)  q <= '0;
+    else if (en) q <= d;
 end
 ```
 
@@ -233,8 +233,8 @@ end
 (* ASYNC_REG = "TRUE" *) logic [1:0] sync_ff;
 
 always_ff @(posedge clk or negedge rst_n) begin
-  if (!rst_n) sync_ff <= '0;
-  else        sync_ff <= {sync_ff[0], async_in};
+    if (!rst_n) sync_ff <= '0;
+    else        sync_ff <= {sync_ff[0], async_in};
 end
 
 assign sync_out = sync_ff[1];
@@ -246,8 +246,8 @@ assign sync_out = sync_ff[1];
 logic [1:0] rst_ff;
 
 always_ff @(posedge clk or negedge arst_n) begin
-  if (!arst_n) rst_ff <= '0;
-  else         rst_ff <= {rst_ff[0], 1'b1};
+    if (!arst_n) rst_ff <= '0;
+    else         rst_ff <= {rst_ff[0], 1'b1};
 end
 
 assign rst_n = rst_ff[1];
@@ -257,29 +257,29 @@ assign rst_n = rst_ff[1];
 
 ```systemverilog
 typedef enum logic [1:0] {
-  ST_IDLE = 2'd0,
-  ST_RUN  = 2'd1,
-  ST_DONE = 2'd2
+    ST_IDLE = 2'd0,
+    ST_RUN  = 2'd1,
+    ST_DONE = 2'd2
 } state_t;
 
 state_t state, state_nxt;
 
 always_ff @(posedge clk or negedge rst_n) begin
-  if (!rst_n) state <= ST_IDLE;
-  else        state <= state_nxt;
+    if (!rst_n) state <= ST_IDLE;
+    else        state <= state_nxt;
 end
 
 always_comb begin
-  state_nxt = state;  // default: hold
-  busy      = 1'b0;   // default-assign every output
-  unique case (state)
-    ST_IDLE: if (start)   state_nxt = ST_RUN;
-    ST_RUN: begin
-      busy = 1'b1;
-      if (done_in)        state_nxt = ST_DONE;
-    end
-    ST_DONE:              state_nxt = ST_IDLE;
-  endcase
+    state_nxt = state;  // default: hold
+    busy      = 1'b0;   // default-assign every output
+    unique case (state)
+        ST_IDLE: if (start)   state_nxt = ST_RUN;
+        ST_RUN: begin
+            busy = 1'b1;
+            if (done_in)      state_nxt = ST_DONE;
+        end
+        ST_DONE:              state_nxt = ST_IDLE;
+    endcase
 end
 ```
 
@@ -292,8 +292,8 @@ corrupted state value trips the `unique` no-match warning in simulation.
 logic [DW-1:0] mem [DEPTH];
 
 always_ff @(posedge clk) begin
-  if (we) mem[addr] <= wdata;
-  rdata <= mem[addr];  // read-old-data; registered output, no reset
+    if (we) mem[addr] <= wdata;
+    rdata <= mem[addr];  // read-old-data; registered output, no reset
 end
 ```
 
@@ -303,10 +303,10 @@ end
 logic [DW-1:0] mem [DEPTH];
 
 always_ff @(posedge clk) begin
-  if (we) mem[waddr] <= wdata;
+    if (we) mem[waddr] <= wdata;
 end
 
 always_ff @(posedge clk) begin
-  rdata <= mem[raddr];
+    rdata <= mem[raddr];
 end
 ```
