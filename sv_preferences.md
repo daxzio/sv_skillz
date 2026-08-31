@@ -81,60 +81,60 @@ except `v_`.
 
 ```systemverilog
 module pulse_stretch #(
-  parameter int G_WIDTH = 4
+    parameter int G_WIDTH = 4
 ) (
-  input  logic clk,
-  input  logic rst_n,
-  input  logic trigger,
-  output logic pulse
+    input  logic clk,
+    input  logic rst_n,
+    input  logic trigger,
+    output logic pulse
 );
 
-  localparam logic [G_WIDTH-1:0] C_MAX = '1;
+    localparam logic [G_WIDTH-1:0] C_MAX = '1;
 
-  logic [G_WIDTH-1:0] f_count;
-  logic [G_WIDTH-1:0] d_count;
-  logic               d_active;
+    logic [G_WIDTH-1:0] f_count;
+    logic [G_WIDTH-1:0] d_count;
+    logic               d_active;
 
-  always_comb begin
-    d_active = (f_count != '0);
-    d_count  = f_count;
-    if (trigger)       d_count = C_MAX;
-    else if (d_active) d_count = f_count - 1'b1;
-  end
+    always_comb begin
+        d_active = (f_count != '0);
+        d_count  = f_count;
+        if (trigger)       d_count = C_MAX;
+        else if (d_active) d_count = f_count - 1'b1;
+    end
 
-  always_ff @(posedge clk or negedge rst_n) begin
-    if (!rst_n) f_count <= '0;
-    else        f_count <= d_count;
-  end
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) f_count <= '0;
+        else        f_count <= d_count;
+    end
 
-  assign pulse = d_active;
+    assign pulse = d_active;
 endmodule
 ```
 
 ```systemverilog
 module pulse_stretch_bank #(
-  parameter int G_LANES = 2,
-  parameter int G_WIDTH = 4
+    parameter int G_LANES = 2,
+    parameter int G_WIDTH = 4
 ) (
-  input  logic               clk,
-  input  logic               rst_n,
-  input  logic [G_LANES-1:0] trigger,
-  output logic [G_LANES-1:0] pulse
+    input  logic               clk,
+    input  logic               rst_n,
+    input  logic [G_LANES-1:0] trigger,
+    output logic [G_LANES-1:0] pulse
 );
 
-  logic [G_LANES-1:0] w_pulse;
+    logic [G_LANES-1:0] w_pulse;
 
-  for (genvar g = 0; g < G_LANES; g++) begin : gen_lane
-    pulse_stretch #(
-      .G_WIDTH (G_WIDTH)
-    ) i_pulse_stretch (
-      .clk     (clk),
-      .rst_n   (rst_n),
-      .trigger (trigger[g]),
-      .pulse   (w_pulse[g])
-    );
-  end
+    for (genvar g = 0; g < G_LANES; g++) begin : gen_lane
+        pulse_stretch #(
+            .G_WIDTH (G_WIDTH)
+        ) i_pulse_stretch (
+            .clk     (clk),
+            .rst_n   (rst_n),
+            .trigger (trigger[g]),
+            .pulse   (w_pulse[g])
+        );
+    end
 
-  assign pulse = w_pulse;
+    assign pulse = w_pulse;
 endmodule
 ```
